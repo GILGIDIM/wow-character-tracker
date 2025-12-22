@@ -160,9 +160,17 @@ module.exports = async (req, res) => {
       return 'Tank';
     }
     
-    // If we have a className, check for healing classes
+    // If we have a className, check for healing classes and apply default healer role
     const classNameLower = (className || '').toLowerCase();
-    if (specNameLower.includes('holy') && (classNameLower === 'priest' || classNameLower === 'paladin')) {
+    
+    // If priest and holy spec
+    if (specNameLower.includes('holy') && classNameLower === 'priest') {
+      return 'Healer';
+    }
+    
+    // If no spec found but character is a priest, default to healer (most common)
+    // This handles cases where spec data isn't available
+    if (classNameLower === 'priest' && !specNameLower) {
       return 'Healer';
     }
     
@@ -208,6 +216,8 @@ module.exports = async (req, res) => {
     if (!profile) {
       return res.status(404).json({ error: 'Character not found' });
     }
+
+    console.log(`${profile.name} - Specializations data:`, JSON.stringify(specializations));
 
     // Get active specialization
     const activeSpec = specializations?.specializations?.find(spec => spec.is_active);
