@@ -18,30 +18,30 @@ const classColors = {
 };
 
 const allCharacters = [
-  { id: 1, name: 'Bael', class: 'Warlock', favoriteRank: 18 },
-  { id: 2, name: 'Djem', class: 'Paladin', favoriteRank: 19 },
-  { id: 3, name: 'Gilash', class: 'Priest', favoriteRank: 14 },
-  { id: 4, name: 'Gildish', class: 'Warlock', favoriteRank: 20 },
-  { id: 5, name: 'Gilesh', class: 'Warrior', favoriteRank: 17 },
-  { id: 6, name: 'Gilia', class: 'Monk', favoriteRank: 12 },
-  { id: 7, name: 'Gililimmu', class: 'Rogue', favoriteRank: 23 },
-  { id: 8, name: 'Gilimin', class: 'Hunter', favoriteRank: 15 },
-  { id: 9, name: 'Gilimmu', class: 'Hunter', favoriteRank: 22 },
-  { id: 10, name: 'Gilmin', class: 'Mage', favoriteRank: 16 },
-  { id: 11, name: 'Gilu', class: 'Warlock', favoriteRank: 11 },
-  { id: 12, name: 'Gilussu', class: 'Shaman', favoriteRank: 24 },
-  { id: 13, name: 'Griz', class: 'Rogue', favoriteRank: 8 },
-  { id: 14, name: 'Lao', class: 'Druid', favoriteRank: 9 },
-  { id: 15, name: 'Lau', class: 'Hunter', favoriteRank: 13 },
-  { id: 16, name: 'Lepita', class: 'Rogue', favoriteRank: 21 },
-  { id: 17, name: 'Locke', class: 'Warrior', favoriteRank: 5 },
-  { id: 18, name: 'Loki', class: 'Mage', favoriteRank: 1 },
-  { id: 19, name: 'Rach', class: 'Demon Hunter', favoriteRank: 2 },
-  { id: 20, name: 'Renée', class: 'Paladin', favoriteRank: 4 },
-  { id: 21, name: 'Rukh', class: 'Hunter', favoriteRank: 6 },
-  { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3 },
-  { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10 },
-  { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7 },
+  { id: 1, name: 'Bael', class: 'Warlock', favoriteRank: 18, realm: 'Ravenholdt' },
+  { id: 2, name: 'Djem', class: 'Paladin', favoriteRank: 19, realm: 'Ravenholdt' },
+  { id: 3, name: 'Gilash', class: 'Priest', favoriteRank: 14, realm: 'Ravenholdt' },
+  { id: 4, name: 'Gildish', class: 'Warlock', favoriteRank: 20, realm: 'Ravenholdt' },
+  { id: 5, name: 'Gilesh', class: 'Warrior', favoriteRank: 17, realm: 'Ravenholdt' },
+  { id: 6, name: 'Gilia', class: 'Monk', favoriteRank: 12, realm: 'Ravenholdt' },
+  { id: 7, name: 'Gililimmu', class: 'Rogue', favoriteRank: 23, realm: 'Ravenholdt' },
+  { id: 8, name: 'Gilimin', class: 'Hunter', favoriteRank: 15, realm: 'Ravenholdt' },
+  { id: 9, name: 'Gilimmu', class: 'Hunter', favoriteRank: 22, realm: 'Ravenholdt' },
+  { id: 10, name: 'Gilmin', class: 'Mage', favoriteRank: 16, realm: 'Ravenholdt' },
+  { id: 11, name: 'Gilu', class: 'Warlock', favoriteRank: 11, realm: 'Ravenholdt' },
+  { id: 12, name: 'Gilussu', class: 'Shaman', favoriteRank: 24, realm: 'Ravenholdt' },
+  { id: 13, name: 'Griz', class: 'Rogue', favoriteRank: 8, realm: 'Ravenholdt' },
+  { id: 14, name: 'Lao', class: 'Druid', favoriteRank: 9, realm: 'Ravenholdt' },
+  { id: 15, name: 'Lau', class: 'Hunter', favoriteRank: 13, realm: 'Ravenholdt' },
+  { id: 16, name: 'Lepita', class: 'Rogue', favoriteRank: 21, realm: 'Ravenholdt' },
+  { id: 17, name: 'Locke', class: 'Warrior', favoriteRank: 5, realm: 'Ravenholdt' },
+  { id: 18, name: 'Loki', class: 'Mage', favoriteRank: 1, realm: 'Ravenholdt' },
+  { id: 19, name: 'Rach', class: 'Demon Hunter', favoriteRank: 2, realm: 'Ravenholdt' },
+  { id: 20, name: 'Renée', class: 'Paladin', favoriteRank: 4, realm: 'Ravenholdt' },
+  { id: 21, name: 'Rukh', class: 'Hunter', favoriteRank: 6, realm: 'Ravenholdt' },
+  { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3, realm: 'Ravenholdt' },
+  { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10, realm: 'Ravenholdt' },
+  { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7, realm: 'Ravenholdt' },
 ].map(char => ({
   ...char,
   image: `/images/${char.name}2.jpg`,
@@ -126,9 +126,9 @@ function App() {
             onChange={handleSortChange}
             className="sort-select"
           >
-            <option value="favorites">Favorite</option>
-            <option value="name">Name</option>
-            <option value="class">Class</option>
+            <option value="favorites">Favorites (1-24)</option>
+            <option value="name">Name (A-Z)</option>
+            <option value="class">Class (A-Z)</option>
           </select>
         </div>
         
