@@ -217,13 +217,13 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    console.log(`${profile.name} - Specializations data:`, JSON.stringify(specializations));
+    console.log(`${profile.name} (${profile.character_class.name}) - Specializations data:`, JSON.stringify(specializations));
 
     // Get active specialization
     const activeSpec = specializations?.specializations?.find(spec => spec.is_active);
     const activeSpecName = activeSpec?.name || null;
     
-    console.log(`${profile.name} - Active Spec:`, activeSpecName, 'Role Type:', activeSpec?.role?.type);
+    console.log(`${profile.name} - Active Spec:`, activeSpecName, 'Spec Object:', JSON.stringify(activeSpec));
 
     // Calculate item level
     const itemLevel = calculateItemLevel(equipment);
@@ -231,7 +231,7 @@ module.exports = async (req, res) => {
     // Get role - pass className and specName for better detection
     const role = getRole(activeSpec, profile.character_class.name, activeSpecName);
     
-    console.log(`${profile.name} - Detected Role:`, role);
+    console.log(`${profile.name} - Class: ${profile.character_class.name}, Spec: ${activeSpecName}, Detected Role:`, role);
 
     // Get primary professions
     const primaryProfs = professions?.primaries?.map(prof => ({

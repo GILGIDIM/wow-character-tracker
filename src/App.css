@@ -81,6 +81,13 @@ body {
   max-width: 1280px;
   margin: 0 auto 1.5rem;
   text-align: center;
+  padding: 0 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .header {
+    padding: 0;
+  }
 }
 
 .title {
@@ -103,6 +110,13 @@ body {
 .filter-container {
   max-width: 1280px;
   margin: 0 auto 2rem;
+  padding: 0 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .filter-container {
+    padding: 0;
+  }
 }
 
 .sort-control-container {
@@ -195,11 +209,19 @@ body {
   }
 }
 
+/* Filter buttons */
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: center;
+  padding: 0 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .filter-buttons {
+    padding: 0;
+  }
 }
 
 .filter-btn {
@@ -242,11 +264,13 @@ body {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 1.5rem;
+  padding: 0 0.5rem;
 }
 
 @media (min-width: 640px) {
   .character-grid {
     grid-template-columns: repeat(3, 1fr);
+    padding: 0;
   }
 }
 
