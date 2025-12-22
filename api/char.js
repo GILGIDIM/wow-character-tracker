@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  // Fetch character profile
+  // Fetch character profile (includes basic spec info)
   async function getCharacterProfile(realm, characterName, token) {
     const realmSlug = realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
     const nameSlug = characterName.toLowerCase();
@@ -62,7 +62,9 @@ module.exports = async (req, res) => {
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log(`Profile data for ${characterName}:`, JSON.stringify(data));
+    return data;
   }
 
   // Fetch character equipment
@@ -222,13 +224,24 @@ module.exports = async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
 
+    // Check if profile includes active_spec
+    console.log(`${profile.name} - Active spec from profile:`, profile.active_spec);
+    
     console.log(`${profile.name} (${profile.character_class.name}) - Specializations data:`, JSON.stringify(specializations));
 
     // Get active specialization - try multiple methods
     let activeSpec = null;
     let activeSpecName = null;
     
-    if (specializations?.specializations) {
+    // First check if profile includes active_spec directly
+    if (profile.active_spec) {
+      activeSpecName = profile.active_spec.name;
+      activeSpec = profile.active_spec;
+      console.log(`Found active spec in profile: ${activeSpecName}`);
+    }
+    
+    // Otherwise try specializations endpoint
+    if (!activeSpec && specializations?.specializations) {
       // Method 1: Check for is_active flag
       activeSpec = specializations.specializations.find(spec => spec.is_active);
       
