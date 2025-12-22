@@ -57,6 +57,40 @@ function RotateCcw({ size = 24 }) {
   );
 }
 
+function SwordsIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
+      <path d="m13.593 18.962-6.729 7.035c-.135.142-.061.383.128.417l3.932.683a.23.23 0 0 0 .205-.068l3.428-3.584 7.684 7.93 3.927-4.106.346-.362 3.725-3.896-7.684-7.928 3.646-3.814a.25.25 0 0 0 .066-.213l-.654-4.112a.232.232 0 0 0-.398-.133l-6.853 7.167L7.485 4.401V.428A.42.42 0 0 0 7.075 0H.791a.42.42 0 0 0-.409.428v6.571c0 .236.183.427.409.427h3.512zm27.505 15.599-3.8 3.972-.24.251-3.958 4.139 18.652 19.411L61.562 64l-1.671-9.882zM63.209.017h-6.283a.42.42 0 0 0-.409.428v3.672L45.483 13.83l-6.728-7.034c-.135-.143-.366-.065-.397.132l-.654 4.111a.25.25 0 0 0 .066.214l3.428 3.585L4.002 53.726 2.408 63.983l9.451-1.748 37.336-39.036 3.646 3.812a.23.23 0 0 0 .205.069l3.931-.684c.188-.031.263-.274.128-.415l-6.854-7.166L59.41 7.442h3.799a.42.42 0 0 0 .409-.428V.444a.42.42 0 0 0-.409-.427"/>
+    </svg>
+  );
+}
+
+function TankIcon({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
+      <path d="M32 2C15.5 2 2 15.5 2 32s13.5 30 30 30 30-13.5 30-30S48.5 2 32 2zm0 54C17.7 56 6 44.3 6 30S17.7 4 32 4s26 11.7 26 26-11.7 26-26 26z"/>
+      <path d="M32 12c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm0 36c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z"/>
+      <circle cx="32" cy="32" r="8"/>
+    </svg>
+  );
+}
+
+function HealerIcon({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
+      <path d="M52 26H38V12c0-3.3-2.7-6-6-6s-6 2.7-6 6v14H12c-3.3 0-6 2.7-6 6s2.7 6 6 6h14v14c0 3.3 2.7 6 6 6s6-2.7 6-6V38h14c3.3 0 6-2.7 6-6s-2.7-6-6-6z"/>
+    </svg>
+  );
+}
+
+function DPSIcon({ size = 24 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
+      <path d="M62 2L46 18l-8-8L22 26l8 8-20 20-8-8v24h24l-8-8 20-20 8 8 16-16-8-8L62 2z"/>
+    </svg>
+  );
+}
+
 function App() {
   const [selectedClass, setSelectedClass] = useState('All');
   const [sortBy, setSortBy] = useState('favorites');
@@ -95,6 +129,20 @@ function App() {
   // Load all character data on mount
   React.useEffect(() => {
     const loadAllCharacterData = async () => {
+      // Check for cached data
+      const cachedData = localStorage.getItem('wowCharacterData');
+      const cacheTimestamp = localStorage.getItem('wowCharacterDataTimestamp');
+      const now = Date.now();
+      const oneHour = 60 * 60 * 1000;
+
+      // Use cache if less than 1 hour old
+      if (cachedData && cacheTimestamp && (now - parseInt(cacheTimestamp)) < oneHour) {
+        setCharacterData(JSON.parse(cachedData));
+        setLoading(false);
+        return;
+      }
+
+      // Otherwise fetch fresh data
       setLoading(true);
       const data = {};
       
@@ -106,6 +154,10 @@ function App() {
         }
         setLoadingProgress(Math.round(((i + 1) / allCharacters.length) * 100));
       }
+      
+      // Cache the data
+      localStorage.setItem('wowCharacterData', JSON.stringify(data));
+      localStorage.setItem('wowCharacterDataTimestamp', now.toString());
       
       setCharacterData(data);
       setLoading(false);
@@ -157,8 +209,26 @@ function App() {
     });
   };
 
+  const getRoleIcon = (role) => {
+    switch(role) {
+      case 'Tank':
+        return <TankIcon size={24} />;
+      case 'Healer':
+        return <HealerIcon size={24} />;
+      case 'DPS':
+      default:
+        return <DPSIcon size={24} />;
+    }
+  };
+
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
+  };
+
+  const refreshCharacterData = () => {
+    localStorage.removeItem('wowCharacterData');
+    localStorage.removeItem('wowCharacterDataTimestamp');
+    window.location.reload();
   };
 
   return (
@@ -234,6 +304,7 @@ function App() {
               className="card-container"
             >
               <div className={`card ${isFlipped ? 'flipped' : ''}`}>
+                {/* Front of Card - Close-up face */}
                 <div className="card-face card-front">
                   <div 
                     className="card-inner"
@@ -241,15 +312,10 @@ function App() {
                   >
                     <div className="card-image-container">
                       <img
-                        src={character.image}
-                        alt={character.name}
+                        src={character.faceImage}
+                        alt={`${character.name} close-up`}
                         className="card-image"
                       />
-                      {apiData?.itemLevel && (
-                        <div className="ilvl-badge">
-                          {apiData.itemLevel}
-                        </div>
-                      )}
                     </div>
                     <div 
                       className="card-info"
@@ -260,6 +326,7 @@ function App() {
                   </div>
                 </div>
 
+                {/* Back of Card - Full body with info */}
                 <div className="card-face card-back">
                   <div 
                     className="card-inner"
@@ -267,15 +334,24 @@ function App() {
                   >
                     <div className="card-image-container full-height">
                       <img
-                        src={character.faceImage}
-                        alt={`${character.name} close-up`}
+                        src={character.image}
+                        alt={character.name}
                         className="card-image"
                       />
+                      {apiData?.itemLevel && (
+                        <div className="ilvl-badge">
+                          <SwordsIcon size={16} />
+                          {apiData.itemLevel}
+                        </div>
+                      )}
                       {apiData && (
                         <div className="card-overlay-info">
                           <div className="overlay-stat">
                             <span className="stat-label">Role:</span>
-                            <span className="stat-value">{apiData.role}</span>
+                            <span className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              {getRoleIcon(apiData.role)}
+                              {apiData.role}
+                            </span>
                           </div>
                           {apiData.professions && apiData.professions.length > 0 && (
                             <div className="overlay-stat">
