@@ -458,6 +458,7 @@ body {
 .name-bar-right {
   display: flex;
   align-items: center;
+  gap: 0.25rem;
   min-width: 32px;
 }
 
@@ -489,8 +490,15 @@ body {
 .ilvl-text {
   font-weight: bold;
   font-size: 1rem;
-  color: var(--text-color);
+  color: #f8b700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.name-bar-right svg {
+  width: 16px;
+  height: 16px;
+  fill: #f8b700;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
 }
 
 /* Role Icon in name bar */

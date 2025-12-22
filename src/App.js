@@ -328,7 +328,10 @@ function App() {
                         {/* Item Level - Right */}
                         <div className="name-bar-right">
                           {apiData?.itemLevel && (
-                            <span className="ilvl-text">{apiData.itemLevel}</span>
+                            <>
+                              <span className="ilvl-text">{apiData.itemLevel}</span>
+                              <SwordsIcon size={16} />
+                            </>
                           )}
                         </div>
                       </div>
