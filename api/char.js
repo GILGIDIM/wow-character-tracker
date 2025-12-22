@@ -139,17 +139,30 @@ module.exports = async (req, res) => {
   }
 
   // Get role from specialization
-  function getRole(specialization) {
-    if (!specialization) return 'DPS';
-    
-    const role = specialization.role?.type;
-    if (role === 'TANK') return 'Tank';
-    if (role === 'HEALING' || role === 'HEALER') return 'Healer';
+  function getRole(specialization, className, specName) {
+    // First try to get from spec object
+    if (specialization) {
+      const role = specialization.role?.type;
+      if (role === 'TANK') return 'Tank';
+      if (role === 'HEALING' || role === 'HEALER') return 'Healer';
+    }
     
     // Fallback: Check spec name for healing specs
-    const specName = specialization.name?.toLowerCase() || '';
+    const specNameLower = (specName || specialization?.name || '').toLowerCase();
     const healingSpecs = ['discipline', 'holy', 'restoration', 'mistweaver', 'preservation'];
-    if (healingSpecs.some(spec => specName.includes(spec))) {
+    if (healingSpecs.some(spec => specNameLower.includes(spec))) {
+      return 'Healer';
+    }
+    
+    // Tank specs by name
+    const tankSpecs = ['protection', 'guardian', 'blood', 'brewmaster', 'vengeance'];
+    if (tankSpecs.some(spec => specNameLower.includes(spec))) {
+      return 'Tank';
+    }
+    
+    // If we have a className, check for healing classes
+    const classNameLower = (className || '').toLowerCase();
+    if (specNameLower.includes('holy') && (classNameLower === 'priest' || classNameLower === 'paladin')) {
       return 'Healer';
     }
     
@@ -198,12 +211,17 @@ module.exports = async (req, res) => {
 
     // Get active specialization
     const activeSpec = specializations?.specializations?.find(spec => spec.is_active);
+    const activeSpecName = activeSpec?.name || null;
+    
+    console.log(`${profile.name} - Active Spec:`, activeSpecName, 'Role Type:', activeSpec?.role?.type);
 
     // Calculate item level
     const itemLevel = calculateItemLevel(equipment);
 
-    // Get role
-    const role = getRole(activeSpec);
+    // Get role - pass className and specName for better detection
+    const role = getRole(activeSpec, profile.character_class.name, activeSpecName);
+    
+    console.log(`${profile.name} - Detected Role:`, role);
 
     // Get primary professions
     const primaryProfs = professions?.primaries?.map(prof => ({
@@ -221,7 +239,7 @@ module.exports = async (req, res) => {
       race: profile.race.name,
       faction: profile.faction.type,
       itemLevel: itemLevel,
-      activeSpec: activeSpec ? activeSpec.name : null,
+      activeSpec: activeSpecName,
       specIcon: activeSpec?.media?.assets?.[0]?.value || null,
       role: role,
       professions: primaryProfs,

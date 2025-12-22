@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -61,6 +66,7 @@ body {
   min-height: 100vh;
   background: linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a);
   padding: 2rem 1rem;
+  overflow-x: hidden;
 }
 
 /* Header */
@@ -82,28 +88,6 @@ body {
   color: #94a3b8;
   text-align: center;
   font-size: 1.125rem;
-  margin-bottom: 0.75rem;
-}
-
-.refresh-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #334155;
-  color: #cbd5e1;
-  border: 2px solid #475569;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 0.875rem;
-}
-
-.refresh-btn:hover {
-  background-color: #475569;
-  border-color: #64748b;
-  transform: scale(1.05);
 }
 
 /* Filter Container */
@@ -114,9 +98,15 @@ body {
 
 .sort-control-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  gap: 0.75rem;
+}
+
+.sort-control {
+  display: flex;
+  align-items: center;
   gap: 0.75rem;
 }
 
@@ -149,9 +139,44 @@ body {
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
 }
 
+.refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background-color: #334155;
+  color: #cbd5e1;
+  border: 2px solid #475569;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background-color: #475569;
+  border-color: #64748b;
+  transform: scale(1.05);
+}
+
 @media (max-width: 640px) {
   .sort-control-container {
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  
+  .sort-control {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+  
+  .sort-label {
+    font-size: 0.875rem;
+  }
+  
+  .sort-select {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
   }
 }
 
@@ -256,15 +281,45 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   border: 4px solid;
-  transition: box-shadow 0.3s;
+  transition: box-shadow 0.3s, transform 0.3s;
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
 .card-container:hover .card-inner {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Holographic shine effect on hover */
+.card-container:hover .card-front .card-image-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 70%
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  animation: shine 0.8s ease-in-out;
+  pointer-events: none;
+  z-index: 5;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
 }
 
 /* Card Image */
@@ -335,12 +390,12 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: right center;
+  object-position: 95% center;
   transition: transform 0.3s;
 }
 
 .card-back .card-image {
-  object-position: right center;
+  object-position: 90% center;
 }
 
 /* Role Icon Badge */
@@ -363,18 +418,15 @@ body {
 
 /* Card Info */
 .card-info {
-  padding: 0.75rem;
+  padding: 0.3125rem 0.75rem;
   text-align: center;
+  background-color: #000;
 }
 
 .card-info-gradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 2rem 0.75rem 0.75rem;
+  padding: 0.3125rem 0.75rem;
   text-align: center;
-  background: linear-gradient(to top, var(--gradient-color), transparent);
+  background-color: #000;
 }
 
 .character-name {
@@ -389,7 +441,7 @@ body {
   font-size: 1.125rem;
   color: var(--text-color);
   margin: 0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .character-class {

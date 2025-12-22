@@ -236,27 +236,29 @@ function App() {
         <p className="subtitle">
           Max Level Characters: {filteredCharacters.length} {selectedClass !== 'All' && `(${allCharacters.length} total)`}
         </p>
-        <button onClick={refreshCharacterData} className="refresh-btn" title="Refresh character data from Blizzard API">
-          <RotateCcw size={16} />
-          Refresh Data
-        </button>
       </div>
 
       <div className="filter-container">
         <div className="sort-control-container">
-          <label htmlFor="sort-select" className="sort-label">Sort By:</label>
-          <select 
-            id="sort-select"
-            value={sortBy} 
-            onChange={handleSortChange}
-            className="sort-select"
-          >
-            <option value="favorites">Favorites (1-24)</option>
-            <option value="name">Name (A-Z)</option>
-            <option value="class">Class (A-Z)</option>
-            <option value="ilvl">Item Level (High to Low)</option>
-            <option value="role">Role (Tank/Healer/DPS)</option>
-          </select>
+          <button onClick={refreshCharacterData} className="refresh-btn" title="Refresh character data from Blizzard API">
+            <RotateCcw size={20} />
+          </button>
+          
+          <div className="sort-control">
+            <label htmlFor="sort-select" className="sort-label">Sort By:</label>
+            <select 
+              id="sort-select"
+              value={sortBy} 
+              onChange={handleSortChange}
+              className="sort-select"
+            >
+              <option value="favorites">Favorites (1-24)</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="class">Class (A-Z)</option>
+              <option value="ilvl">Item Level (High to Low)</option>
+              <option value="role">Role (Tank/Healer/DPS)</option>
+            </select>
+          </div>
         </div>
         
         <div className="filter-buttons">
