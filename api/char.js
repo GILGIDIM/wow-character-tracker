@@ -1,6 +1,233 @@
-module.exports = (req, res) => {
-  res.status(200).json({ 
-    message: 'Char API endpoint works!',
-    query: req.query
-  });
+// Blizzard API Serverless Function for Vercel
+// Endpoint: /api/char
+
+module.exports = async (req, res) => {
+  const BLIZZARD_CLIENT_ID = process.env.BLIZZARD_CLIENT_ID;
+  const BLIZZARD_CLIENT_SECRET = process.env.BLIZZARD_CLIENT_SECRET;
+  const REGION = process.env.BLIZZARD_REGION || 'eu';
+
+  // Cache for access token (in memory, resets on cold starts)
+  let accessToken = null;
+  let tokenExpiry = null;
+
+  // Get OAuth access token
+  async function getAccessToken() {
+    if (accessToken && tokenExpiry && Date.now() < tokenExpiry) {
+      return accessToken;
+    }
+
+    const auth = Buffer.from(`${BLIZZARD_CLIENT_ID}:${BLIZZARD_CLIENT_SECRET}`).toString('base64');
+    
+    try {
+      const response = await fetch(`https://${REGION}.battle.net/oauth/token`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${auth}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'grant_type=client_credentials'
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to get access token: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      accessToken = data.access_token;
+      tokenExpiry = Date.now() + ((data.expires_in - 300) * 1000);
+      
+      return accessToken;
+    } catch (error) {
+      console.error('Token error:', error);
+      throw error;
+    }
+  }
+
+  // Fetch character profile
+  async function getCharacterProfile(realm, characterName, token) {
+    const realmSlug = realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+    const nameSlug = characterName.toLowerCase();
+    
+    const url = `https://${REGION}.api.blizzard.com/profile/wow/character/${realmSlug}/${nameSlug}?namespace=profile-${REGION}&locale=en_GB`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch profile for ${characterName}: ${response.status}`);
+      return null;
+    }
+
+    return await response.json();
+  }
+
+  // Fetch character equipment
+  async function getCharacterEquipment(realm, characterName, token) {
+    const realmSlug = realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+    const nameSlug = characterName.toLowerCase();
+    
+    const url = `https://${REGION}.api.blizzard.com/profile/wow/character/${realmSlug}/${nameSlug}/equipment?namespace=profile-${REGION}&locale=en_GB`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch equipment for ${characterName}: ${response.status}`);
+      return null;
+    }
+
+    return await response.json();
+  }
+
+  // Fetch character specializations
+  async function getCharacterSpecializations(realm, characterName, token) {
+    const realmSlug = realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+    const nameSlug = characterName.toLowerCase();
+    
+    const url = `https://${REGION}.api.blizzard.com/profile/wow/character/${realmSlug}/${nameSlug}/specializations?namespace=profile-${REGION}&locale=en_GB`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch specializations for ${characterName}: ${response.status}`);
+      return null;
+    }
+
+    return await response.json();
+  }
+
+  // Fetch character professions
+  async function getCharacterProfessions(realm, characterName, token) {
+    const realmSlug = realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+    const nameSlug = characterName.toLowerCase();
+    
+    const url = `https://${REGION}.api.blizzard.com/profile/wow/character/${realmSlug}/${nameSlug}/professions?namespace=profile-${REGION}&locale=en_GB`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch professions for ${characterName}: ${response.status}`);
+      return null;
+    }
+
+    return await response.json();
+  }
+
+  // Calculate item level from equipment
+  function calculateItemLevel(equipment) {
+    if (!equipment || !equipment.equipped_items) return 0;
+    
+    const items = equipment.equipped_items;
+    const totalItemLevel = items.reduce((sum, item) => sum + (item.level?.value || 0), 0);
+    
+    return Math.round(totalItemLevel / items.length);
+  }
+
+  // Get role from specialization
+  function getRole(specialization) {
+    if (!specialization) return 'DPS';
+    
+    const role = specialization.role?.type;
+    if (role === 'TANK') return 'Tank';
+    if (role === 'HEALING') return 'Healer';
+    return 'DPS';
+  }
+
+  // Main handler logic
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { realm, name } = req.query;
+
+  if (!realm || !name) {
+    return res.status(400).json({ error: 'Missing realm or character name' });
+  }
+
+  // Check if environment variables are set
+  if (!BLIZZARD_CLIENT_ID || !BLIZZARD_CLIENT_SECRET) {
+    return res.status(500).json({ error: 'API credentials not configured' });
+  }
+
+  try {
+    // Get access token
+    const token = await getAccessToken();
+
+    // Fetch all character data in parallel
+    const [profile, equipment, specializations, professions] = await Promise.all([
+      getCharacterProfile(realm, name, token),
+      getCharacterEquipment(realm, name, token),
+      getCharacterSpecializations(realm, name, token),
+      getCharacterProfessions(realm, name, token)
+    ]);
+
+    if (!profile) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    // Get active specialization
+    const activeSpec = specializations?.specializations?.find(spec => spec.is_active);
+
+    // Calculate item level
+    const itemLevel = calculateItemLevel(equipment);
+
+    // Get role
+    const role = getRole(activeSpec);
+
+    // Get primary professions
+    const primaryProfs = professions?.primaries?.map(prof => ({
+      name: prof.profession.name,
+      skillLevel: prof.skill_points,
+      maxSkillLevel: prof.max_skill_points
+    })) || [];
+
+    // Build response
+    const characterData = {
+      name: profile.name,
+      realm: profile.realm.name,
+      level: profile.level,
+      class: profile.character_class.name,
+      race: profile.race.name,
+      faction: profile.faction.type,
+      itemLevel: itemLevel,
+      activeSpec: activeSpec ? activeSpec.name : null,
+      specIcon: activeSpec?.media?.assets?.[0]?.value || null,
+      role: role,
+      professions: primaryProfs,
+      thumbnail: profile.avatar_url || null,
+      lastModified: profile.last_login_timestamp
+    };
+
+    return res.status(200).json(characterData);
+
+  } catch (error) {
+    console.error('Error fetching character data:', error);
+    return res.status(500).json({ 
+      error: 'Failed to fetch character data', 
+      details: error.message 
+    });
+  }
 };
