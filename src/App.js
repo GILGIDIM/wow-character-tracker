@@ -232,7 +232,7 @@ function App() {
       )}
 
       <div className="header">
-        <h1 className="title">Midnight Preparation</h1>
+        <h1 className="title">Midnight</h1>
         <p className="subtitle">
           Max Level Characters: {filteredCharacters.length} {selectedClass !== 'All' && `(${allCharacters.length} total)`}
         </p>
@@ -252,11 +252,11 @@ function App() {
               onChange={handleSortChange}
               className="sort-select"
             >
-              <option value="favorites">Favorites (1-24)</option>
-              <option value="name">Name (A-Z)</option>
-              <option value="class">Class (A-Z)</option>
-              <option value="ilvl">Item Level (High to Low)</option>
-              <option value="role">Role (Tank/Healer/DPS)</option>
+              <option value="favorites">Favorites</option>
+              <option value="name">Name</option>
+              <option value="class">Class</option>
+              <option value="ilvl">iLvl</option>
+              <option value="role">Role</option>
             </select>
           </div>
         </div>
