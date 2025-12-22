@@ -93,6 +93,8 @@ module.exports = async (req, res) => {
     
     const url = `https://${REGION}.api.blizzard.com/profile/wow/character/${realmSlug}/${nameSlug}/specializations?namespace=profile-${REGION}&locale=en_GB`;
     
+    console.log(`Fetching specs for ${characterName} from:`, url);
+    
     const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -100,11 +102,14 @@ module.exports = async (req, res) => {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch specializations for ${characterName}: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Failed to fetch specializations for ${characterName}: ${response.status} - ${errorText}`);
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log(`Raw spec response for ${characterName}:`, JSON.stringify(data));
+    return data;
   }
 
   // Fetch character professions
