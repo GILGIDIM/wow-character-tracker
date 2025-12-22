@@ -12,6 +12,50 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-content {
+  text-align: center;
+  color: white;
+}
+
+.loading-content h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.loading-bar {
+  width: 300px;
+  height: 20px;
+  background: #334155;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 auto 1rem;
+}
+
+.loading-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transition: width 0.3s ease;
+}
+
+.loading-content p {
+  color: #94a3b8;
+  font-size: 1.125rem;
+}
+
 /* App Container */
 .app-container {
   min-height: 100vh;
@@ -209,6 +253,50 @@ body {
 
 .card-image-container.full-height {
   flex: 1;
+}
+
+/* Item Level Badge */
+.ilvl-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fbbf24;
+  font-weight: bold;
+  font-size: 1.125rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 2px solid #fbbf24;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+/* Card Back Overlay Info */
+.card-overlay-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+  padding: 1.5rem 1rem 1rem;
+  color: white;
+}
+
+.overlay-stat {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: white;
+  text-align: right;
 }
 
 .card-image {
