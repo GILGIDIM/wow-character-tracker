@@ -4,12 +4,16 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   overflow-x: hidden;
   width: 100%;
+  position: relative;
 }
 
 body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -64,10 +68,11 @@ body {
 /* App Container */
 .app-container {
   min-height: 100vh;
+  width: 100%;
   background: linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a);
   padding: 2rem 0.5rem;
   overflow-x: hidden;
-  max-width: 100vw;
+  position: relative;
 }
 
 @media (min-width: 640px) {
@@ -259,18 +264,21 @@ body {
 
 /* Character Grid - Updated responsive breakpoints */
 .character-grid {
-  max-width: 1280px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
-  padding: 0 0.5rem;
+  gap: 1rem;
+  padding: 0 0.75rem;
 }
 
 @media (min-width: 640px) {
   .character-grid {
+    max-width: 1280px;
     grid-template-columns: repeat(3, 1fr);
-    padding: 0;
+    gap: 1.5rem;
+    padding: 0 1rem;
   }
 }
 
@@ -285,6 +293,8 @@ body {
   perspective: 1000px;
   cursor: pointer;
   aspect-ratio: 2/2.5;
+  width: 100%;
+  max-width: 100%;
 }
 
 .card {

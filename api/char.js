@@ -219,9 +219,27 @@ module.exports = async (req, res) => {
 
     console.log(`${profile.name} (${profile.character_class.name}) - Specializations data:`, JSON.stringify(specializations));
 
-    // Get active specialization
-    const activeSpec = specializations?.specializations?.find(spec => spec.is_active);
-    const activeSpecName = activeSpec?.name || null;
+    // Get active specialization - try multiple methods
+    let activeSpec = null;
+    let activeSpecName = null;
+    
+    if (specializations?.specializations) {
+      // Method 1: Check for is_active flag
+      activeSpec = specializations.specializations.find(spec => spec.is_active);
+      
+      // Method 2: If no is_active, use the active_spec_group
+      if (!activeSpec && specializations.active_spec_group !== undefined) {
+        const activeGroup = specializations.active_spec_group;
+        activeSpec = specializations.specializations.find(spec => spec.spec_group === activeGroup);
+      }
+      
+      // Method 3: If still no spec, just use the first one
+      if (!activeSpec && specializations.specializations.length > 0) {
+        activeSpec = specializations.specializations[0];
+      }
+      
+      activeSpecName = activeSpec?.name || null;
+    }
     
     console.log(`${profile.name} - Active Spec:`, activeSpecName, 'Spec Object:', JSON.stringify(activeSpec));
 
