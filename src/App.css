@@ -67,6 +67,7 @@ body {
 .header {
   max-width: 1280px;
   margin: 0 auto 1.5rem;
+  text-align: center;
 }
 
 .title {
@@ -81,13 +82,13 @@ body {
   color: #94a3b8;
   text-align: center;
   font-size: 1.125rem;
+  margin-bottom: 0.75rem;
 }
 
 .refresh-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 1rem auto 0;
   padding: 0.5rem 1rem;
   background-color: #334155;
   color: #cbd5e1;
@@ -259,6 +260,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .card-container:hover .card-inner {
@@ -277,11 +279,11 @@ body {
   flex: 1;
 }
 
-/* Item Level Badge - Updated style with swords icon */
+/* Item Level Badge - Updated position */
 .ilvl-badge {
   position: absolute;
   top: 0.75rem;
-  left: 0.75rem;
+  right: 0.75rem;
   background: rgba(0, 0, 0, 0.85);
   color: #fbbf24;
   font-weight: bold;
@@ -333,7 +335,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 65% center;
+  object-position: right center;
   transition: transform 0.3s;
 }
 
@@ -341,12 +343,18 @@ body {
   object-position: right center;
 }
 
-/* Role Icon */
+/* Role Icon Badge */
+.role-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10;
+}
+
 .role-icon {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 .card-container:hover .card-image {
@@ -359,11 +367,14 @@ body {
   text-align: center;
 }
 
-.card-info.overlay {
+.card-info-gradient {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  padding: 2rem 0.75rem 0.75rem;
+  text-align: center;
+  background: linear-gradient(to top, var(--gradient-color), transparent);
 }
 
 .character-name {
@@ -371,6 +382,14 @@ body {
   font-size: 1.125rem;
   color: #1e293b;
   margin: 0;
+}
+
+.character-name-gradient {
+  font-weight: bold;
+  font-size: 1.125rem;
+  color: var(--text-color);
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .character-class {

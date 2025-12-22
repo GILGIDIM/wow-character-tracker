@@ -144,7 +144,15 @@ module.exports = async (req, res) => {
     
     const role = specialization.role?.type;
     if (role === 'TANK') return 'Tank';
-    if (role === 'HEALING') return 'Healer';
+    if (role === 'HEALING' || role === 'HEALER') return 'Healer';
+    
+    // Fallback: Check spec name for healing specs
+    const specName = specialization.name?.toLowerCase() || '';
+    const healingSpecs = ['discipline', 'holy', 'restoration', 'mistweaver', 'preservation'];
+    if (healingSpecs.some(spec => specName.includes(spec))) {
+      return 'Healer';
+    }
+    
     return 'DPS';
   }
 

@@ -66,29 +66,15 @@ function SwordsIcon({ size = 16 }) {
 }
 
 function TankIcon({ size = 24 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
-      <path d="M32 2C15.5 2 2 15.5 2 32s13.5 30 30 30 30-13.5 30-30S48.5 2 32 2zm0 54C17.7 56 6 44.3 6 30S17.7 4 32 4s26 11.7 26 26-11.7 26-26 26z"/>
-      <path d="M32 12c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20zm0 36c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z"/>
-      <circle cx="32" cy="32" r="8"/>
-    </svg>
-  );
+  return <img src="/images/roles/tank.png" alt="Tank" width={size} height={size} className="role-icon" />;
 }
 
 function HealerIcon({ size = 24 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
-      <path d="M52 26H38V12c0-3.3-2.7-6-6-6s-6 2.7-6 6v14H12c-3.3 0-6 2.7-6 6s2.7 6 6 6h14v14c0 3.3 2.7 6 6 6s6-2.7 6-6V38h14c3.3 0 6-2.7 6-6s-2.7-6-6-6z"/>
-    </svg>
-  );
+  return <img src="/images/roles/heal.png" alt="Healer" width={size} height={size} className="role-icon" />;
 }
 
 function DPSIcon({ size = 24 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="currentColor">
-      <path d="M62 2L46 18l-8-8L22 26l8 8-20 20-8-8v24h24l-8-8 20-20 8 8 16-16-8-8L62 2z"/>
-    </svg>
-  );
+  return <img src="/images/roles/dps.png" alt="DPS" width={size} height={size} className="role-icon" />;
 }
 
 function App() {
@@ -250,6 +236,10 @@ function App() {
         <p className="subtitle">
           Max Level Characters: {filteredCharacters.length} {selectedClass !== 'All' && `(${allCharacters.length} total)`}
         </p>
+        <button onClick={refreshCharacterData} className="refresh-btn" title="Refresh character data from Blizzard API">
+          <RotateCcw size={16} />
+          Refresh Data
+        </button>
       </div>
 
       <div className="filter-container">
@@ -304,7 +294,7 @@ function App() {
               className="card-container"
             >
               <div className={`card ${isFlipped ? 'flipped' : ''}`}>
-                {/* Front of Card - Close-up face */}
+                {/* Front of Card - Full body with badges */}
                 <div className="card-face card-front">
                   <div 
                     className="card-inner"
@@ -312,21 +302,37 @@ function App() {
                   >
                     <div className="card-image-container">
                       <img
-                        src={character.faceImage}
-                        alt={`${character.name} close-up`}
+                        src={character.image}
+                        alt={character.name}
                         className="card-image"
                       />
+                      {/* Role Icon - Top Left */}
+                      {apiData?.role && (
+                        <div className="role-badge">
+                          {getRoleIcon(apiData.role)}
+                        </div>
+                      )}
+                      {/* Item Level Badge - Top Right */}
+                      {apiData?.itemLevel && (
+                        <div className="ilvl-badge">
+                          <SwordsIcon size={16} />
+                          {apiData.itemLevel}
+                        </div>
+                      )}
                     </div>
                     <div 
-                      className="card-info"
-                      style={{ backgroundColor: classColors[character.class].bg }}
+                      className="card-info-gradient"
+                      style={{ 
+                        '--gradient-color': classColors[character.class].bg,
+                        '--text-color': classColors[character.class].border
+                      }}
                     >
-                      <h3 className="character-name">{character.name}</h3>
+                      <h3 className="character-name-gradient">{character.name}</h3>
                     </div>
                   </div>
                 </div>
 
-                {/* Back of Card - Full body with info */}
+                {/* Back of Card - Close-up face with info */}
                 <div className="card-face card-back">
                   <div 
                     className="card-inner"
@@ -334,25 +340,12 @@ function App() {
                   >
                     <div className="card-image-container full-height">
                       <img
-                        src={character.image}
-                        alt={character.name}
+                        src={character.faceImage}
+                        alt={`${character.name} close-up`}
                         className="card-image"
                       />
-                      {apiData?.itemLevel && (
-                        <div className="ilvl-badge">
-                          <SwordsIcon size={16} />
-                          {apiData.itemLevel}
-                        </div>
-                      )}
                       {apiData && (
                         <div className="card-overlay-info">
-                          <div className="overlay-stat">
-                            <span className="stat-label">Role:</span>
-                            <span className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                              {getRoleIcon(apiData.role)}
-                              {apiData.role}
-                            </span>
-                          </div>
                           {apiData.professions && apiData.professions.length > 0 && (
                             <div className="overlay-stat">
                               <span className="stat-label">Professions:</span>
