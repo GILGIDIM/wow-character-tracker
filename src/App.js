@@ -20,7 +20,7 @@ const classColors = {
 const allCharacters = [
   { id: 1, name: 'Bael', class: 'Warlock', favoriteRank: 18, realm: 'Ravenholdt' },
   { id: 2, name: 'Djem', class: 'Paladin', favoriteRank: 19, realm: 'Ravenholdt' },
-  { id: 3, name: 'Gilash', class: 'Priest', favoriteRank: 14, realm: 'Ravenholdt', manualRole: 'Healer' },
+  { id: 3, name: 'Gilash', class: 'Priest', favoriteRank: 14, realm: 'Ravenholdt' },
   { id: 4, name: 'Gildish', class: 'Warlock', favoriteRank: 20, realm: 'Ravenholdt' },
   { id: 5, name: 'Gilesh', class: 'Warrior', favoriteRank: 17, realm: 'Ravenholdt' },
   { id: 6, name: 'Gilia', class: 'Monk', favoriteRank: 12, realm: 'Ravenholdt' },
@@ -34,7 +34,7 @@ const allCharacters = [
   { id: 14, name: 'Lao', class: 'Druid', favoriteRank: 9, realm: 'Ravenholdt' },
   { id: 15, name: 'Lau', class: 'Hunter', favoriteRank: 13, realm: 'Ravenholdt' },
   { id: 16, name: 'Lepita', class: 'Rogue', favoriteRank: 21, realm: 'Ravenholdt' },
-  { id: 17, name: 'Locke', class: 'Warrior', favoriteRank: 5, realm: 'Ravenholdt', manualRole: 'Tank' },
+  { id: 17, name: 'Locke', class: 'Warrior', favoriteRank: 5, realm: 'Ravenholdt' },
   { id: 18, name: 'Loki', class: 'Mage', favoriteRank: 1, realm: 'Ravenholdt' },
   { id: 19, name: 'Rach', class: 'Demon Hunter', favoriteRank: 2, realm: 'Ravenholdt' },
   { id: 20, name: 'Renée', class: 'Paladin', favoriteRank: 4, realm: 'Ravenholdt' },
@@ -173,8 +173,8 @@ function App() {
       });
     } else if (sortBy === 'role') {
       result.sort((a, b) => {
-        const roleA = a.manualRole || characterData[a.id]?.role || 'DPS';
-        const roleB = b.manualRole || characterData[b.id]?.role || 'DPS';
+        const roleA = characterData[a.id]?.role || 'DPS';
+        const roleB = characterData[b.id]?.role || 'DPS';
         const roleOrder = { 'Tank': 0, 'Healer': 1, 'DPS': 2 };
         return roleOrder[roleA] - roleOrder[roleB];
       });
@@ -289,9 +289,6 @@ function App() {
           const isFlipped = flippedCards.has(character.id);
           const apiData = characterData[character.id];
           
-          // Use manual role override if API data is missing or returns DPS for known tanks/healers
-          const displayRole = character.manualRole || apiData?.role || 'DPS';
-          
           return (
             <div
               key={character.id}
@@ -311,19 +308,6 @@ function App() {
                         alt={character.name}
                         className="card-image"
                       />
-                      {/* Role Icon - Top Left */}
-                      {displayRole && (
-                        <div className="role-badge">
-                          {getRoleIcon(displayRole)}
-                        </div>
-                      )}
-                      {/* Item Level Badge - Top Right */}
-                      {apiData?.itemLevel && (
-                        <div className="ilvl-badge">
-                          <SwordsIcon size={16} />
-                          {apiData.itemLevel}
-                        </div>
-                      )}
                     </div>
                     <div 
                       className="card-info-gradient"
@@ -332,7 +316,22 @@ function App() {
                         '--text-color': classColors[character.class].border
                       }}
                     >
-                      <h3 className="character-name-gradient">{character.name}</h3>
+                      <div className="card-name-bar">
+                        {/* Role Icon - Left */}
+                        <div className="name-bar-left">
+                          {apiData?.role && getRoleIcon(apiData.role)}
+                        </div>
+                        
+                        {/* Character Name - Center */}
+                        <h3 className="character-name-gradient">{character.name}</h3>
+                        
+                        {/* Item Level - Right */}
+                        <div className="name-bar-right">
+                          {apiData?.itemLevel && (
+                            <span className="ilvl-text">{apiData.itemLevel}</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
