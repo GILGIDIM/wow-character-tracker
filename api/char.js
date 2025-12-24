@@ -274,10 +274,14 @@ module.exports = async (req, res) => {
     // Get primary professions
     const primaryProfs = professions?.primaries?.map(prof => {
       console.log(`Profession raw data:`, JSON.stringify(prof));
+      
+      // Get the current expansion tier (first tier in the array)
+      const currentTier = prof.tiers?.[0];
+      
       return {
         name: prof.profession.name,
-        skillLevel: prof.skill_points,
-        maxSkillLevel: prof.max_skill_points
+        skillLevel: currentTier?.skill_points,
+        maxSkillLevel: currentTier?.max_skill_points
       };
     }) || [];
     
