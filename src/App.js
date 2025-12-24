@@ -222,25 +222,25 @@ function App() {
   };
 
   const getProfessionColor = (skillLevel, maxSkillLevel) => {
-    if (!skillLevel || !maxSkillLevel) return { bg: '#1e293b', text: '#cbd5e1' };
+    if (!skillLevel || !maxSkillLevel) return '#cbd5e1';
     
     const percentage = (skillLevel / maxSkillLevel) * 100;
     
     if (percentage >= 100) {
-      // Maxed - Green
-      return { bg: '#15803d', text: '#ffffff' };
+      // Maxed - Dark Green
+      return '#22c55e';
     } else if (percentage >= 75) {
       // 75-99% - Light Green
-      return { bg: '#16a34a', text: '#ffffff' };
+      return '#84cc16';
     } else if (percentage >= 50) {
-      // 50-74% - Yellow/Orange
-      return { bg: '#d97706', text: '#ffffff' };
+      // 50-74% - Yellow
+      return '#eab308';
     } else if (percentage >= 25) {
       // 25-49% - Orange
-      return { bg: '#ea580c', text: '#ffffff' };
+      return '#f97316';
     } else {
       // 0-24% - Red
-      return { bg: '#dc2626', text: '#ffffff' };
+      return '#ef4444';
     }
   };
 
@@ -440,19 +440,15 @@ function App() {
                           {apiData.professions && apiData.professions.length > 0 && (
                             <div className="professions-list">
                               {apiData.professions.map((prof, idx) => {
-                                const colors = getProfessionColor(prof.skillLevel, prof.maxSkillLevel);
+                                const levelColor = getProfessionColor(prof.skillLevel, prof.maxSkillLevel);
                                 return (
-                                  <div 
-                                    key={idx} 
-                                    className="profession-item"
-                                    style={{ 
-                                      backgroundColor: colors.bg,
-                                      color: colors.text
-                                    }}
-                                  >
+                                  <div key={idx} className="profession-item">
                                     <span className="profession-name">{prof.name}</span>
                                     {prof.skillLevel !== undefined && prof.maxSkillLevel !== undefined && (
-                                      <span className="profession-level">
+                                      <span 
+                                        className="profession-level"
+                                        style={{ color: levelColor }}
+                                      >
                                         {prof.skillLevel}/{prof.maxSkillLevel}
                                       </span>
                                     )}
