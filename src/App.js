@@ -79,6 +79,7 @@ function DPSIcon({ size = 24 }) {
 
 function App() {
   const [selectedClass, setSelectedClass] = useState('All');
+  const [selectedProfession, setSelectedProfession] = useState('All');
   const [sortBy, setSortBy] = useState('favorites');
   const [flippedCards, setFlippedCards] = useState(new Set());
   const [characterData, setCharacterData] = useState({});
@@ -177,6 +178,13 @@ function App() {
       result = result.filter(char => char.class === selectedClass);
     }
     
+    if (selectedProfession !== 'All') {
+      result = result.filter(char => {
+        const charData = characterData[char.id];
+        return charData?.professions?.some(prof => prof.name === selectedProfession);
+      });
+    }
+    
     if (sortBy === 'favorites') {
       result.sort((a, b) => a.favoriteRank - b.favoriteRank);
     } else if (sortBy === 'name') {
@@ -199,7 +207,7 @@ function App() {
     }
     
     return result;
-  }, [selectedClass, sortBy, characterData]);
+  }, [selectedClass, selectedProfession, sortBy, characterData]);
 
   const toggleCardFlip = (id) => {
     setFlippedCards(prev => {
@@ -211,6 +219,29 @@ function App() {
       }
       return newSet;
     });
+  };
+
+  const getProfessionColor = (skillLevel, maxSkillLevel) => {
+    if (!skillLevel || !maxSkillLevel) return { bg: '#1e293b', text: '#cbd5e1' };
+    
+    const percentage = (skillLevel / maxSkillLevel) * 100;
+    
+    if (percentage >= 100) {
+      // Maxed - Green
+      return { bg: '#15803d', text: '#ffffff' };
+    } else if (percentage >= 75) {
+      // 75-99% - Light Green
+      return { bg: '#16a34a', text: '#ffffff' };
+    } else if (percentage >= 50) {
+      // 50-74% - Yellow/Orange
+      return { bg: '#d97706', text: '#ffffff' };
+    } else if (percentage >= 25) {
+      // 25-49% - Orange
+      return { bg: '#ea580c', text: '#ffffff' };
+    } else {
+      // 0-24% - Red
+      return { bg: '#dc2626', text: '#ffffff' };
+    }
   };
 
   const getRoleIcon = (role) => {
@@ -316,10 +347,17 @@ function App() {
       <div className="filter-section">
         <h3 className="filter-title">Professions</h3>
         <div className="filter-buttons profession-filters">
+          <button
+            onClick={() => setSelectedProfession('All')}
+            className={`filter-btn profession-filter ${selectedProfession === 'All' ? 'active' : ''}`}
+          >
+            All
+          </button>
           {professionList.map(profName => (
             <button
               key={profName}
-              className="filter-btn profession-filter"
+              onClick={() => setSelectedProfession(profName)}
+              className={`filter-btn profession-filter ${selectedProfession === profName ? 'active' : ''}`}
             >
               {profName} [{professionCounts[profName]}]
             </button>
@@ -401,16 +439,26 @@ function App() {
                         <div className="card-overlay-info">
                           {apiData.professions && apiData.professions.length > 0 && (
                             <div className="professions-list">
-                              {apiData.professions.map((prof, idx) => (
-                                <div key={idx} className="profession-item">
-                                  <span className="profession-name">{prof.name}</span>
-                                  {prof.skillLevel !== undefined && prof.maxSkillLevel !== undefined && (
-                                    <span className="profession-level">
-                                      {prof.skillLevel}/{prof.maxSkillLevel}
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
+                              {apiData.professions.map((prof, idx) => {
+                                const colors = getProfessionColor(prof.skillLevel, prof.maxSkillLevel);
+                                return (
+                                  <div 
+                                    key={idx} 
+                                    className="profession-item"
+                                    style={{ 
+                                      backgroundColor: colors.bg,
+                                      color: colors.text
+                                    }}
+                                  >
+                                    <span className="profession-name">{prof.name}</span>
+                                    {prof.skillLevel !== undefined && prof.maxSkillLevel !== undefined && (
+                                      <span className="profession-level">
+                                        {prof.skillLevel}/{prof.maxSkillLevel}
+                                      </span>
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
                           )}
                         </div>

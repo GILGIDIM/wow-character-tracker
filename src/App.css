@@ -305,6 +305,12 @@ body {
   color: white;
 }
 
+.profession-filter.active {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #60a5fa;
+}
+
 /* Character Grid - Updated responsive breakpoints */
 .character-grid {
   max-width: 100%;
@@ -440,19 +446,20 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
 }
 
 .profession-name {
   font-weight: 600;
-  color: #cbd5e1;
   font-size: 0.95rem;
 }
 
 .profession-level {
   font-weight: bold;
-  color: #fbbf24;
   font-size: 0.9rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .card-image {
