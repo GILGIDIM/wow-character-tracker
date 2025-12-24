@@ -232,7 +232,7 @@ function App() {
       )}
 
       <div className="header">
-        <h1 className="title">Midnight</h1>
+        <h1 className="title">Midnight Preparation</h1>
         <p className="subtitle">
           Max Level Characters: {filteredCharacters.length} {selectedClass !== 'All' && `(${allCharacters.length} total)`}
         </p>
@@ -252,11 +252,11 @@ function App() {
               onChange={handleSortChange}
               className="sort-select"
             >
-              <option value="favorites">Favorites</option>
-              <option value="name">Name</option>
-              <option value="class">Class</option>
-              <option value="ilvl">iLvl</option>
-              <option value="role">Role</option>
+              <option value="favorites">Favorites (1-24)</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="class">Class (A-Z)</option>
+              <option value="ilvl">Item Level (High to Low)</option>
+              <option value="role">Role (Tank/Healer/DPS)</option>
             </select>
           </div>
         </div>
@@ -354,11 +354,17 @@ function App() {
                       {apiData && (
                         <div className="card-overlay-info">
                           {apiData.professions && apiData.professions.length > 0 && (
-                            <div className="overlay-stat">
-                              <span className="stat-label">Professions:</span>
-                              <span className="stat-value">
-                                {apiData.professions.map(p => p.name).join(', ')}
-                              </span>
+                            <div className="professions-list">
+                              {apiData.professions.map((prof, idx) => (
+                                <div key={idx} className="profession-item">
+                                  <span className="profession-name">{prof.name}</span>
+                                  {prof.skillLevel !== undefined && prof.maxSkillLevel !== undefined && (
+                                    <span className="profession-level">
+                                      {prof.skillLevel}/{prof.maxSkillLevel}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
                             </div>
                           )}
                         </div>
