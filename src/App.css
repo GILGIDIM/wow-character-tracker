@@ -124,6 +124,38 @@ body {
   }
 }
 
+.toggle-filters-btn {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: 1rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #334155;
+  color: #cbd5e1;
+  border: 2px solid #475569;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-filters-btn:hover {
+  background-color: #475569;
+  border-color: #64748b;
+}
+
+.filter-section {
+  margin-top: 1.5rem;
+}
+
+.filter-title {
+  color: #cbd5e1;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
 .sort-control-container {
   display: flex;
   justify-content: space-between;
@@ -260,6 +292,17 @@ body {
 .filter-btn.class-filter.active {
   background-color: var(--class-bg);
   color: #1e293b;
+}
+
+.profession-filter {
+  background-color: #1e3a5f;
+  border-color: #3b82f6;
+  color: #cbd5e1;
+}
+
+.profession-filter:hover {
+  background-color: #2563eb;
+  color: white;
 }
 
 /* Character Grid - Updated responsive breakpoints */

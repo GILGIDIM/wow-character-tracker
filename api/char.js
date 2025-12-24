@@ -132,7 +132,9 @@ module.exports = async (req, res) => {
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+    console.log(`Raw professions data for ${characterName}:`, JSON.stringify(data));
+    return data;
   }
 
   // Calculate item level from equipment
@@ -270,11 +272,16 @@ module.exports = async (req, res) => {
     console.log(`${profile.name} - Class: ${profile.character_class.name}, Spec: ${activeSpecName}, Detected Role:`, role);
 
     // Get primary professions
-    const primaryProfs = professions?.primaries?.map(prof => ({
-      name: prof.profession.name,
-      skillLevel: prof.skill_points,
-      maxSkillLevel: prof.max_skill_points
-    })) || [];
+    const primaryProfs = professions?.primaries?.map(prof => {
+      console.log(`Profession raw data:`, JSON.stringify(prof));
+      return {
+        name: prof.profession.name,
+        skillLevel: prof.skill_points,
+        maxSkillLevel: prof.max_skill_points
+      };
+    }) || [];
+    
+    console.log(`${profile.name} - Mapped Professions:`, JSON.stringify(primaryProfs));
 
     // Build response
     const characterData = {

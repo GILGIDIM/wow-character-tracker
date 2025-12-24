@@ -84,6 +84,7 @@ function App() {
   const [characterData, setCharacterData] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
 
   const classCounts = useMemo(() => {
     const counts = {};
@@ -96,6 +97,23 @@ function App() {
   const classList = useMemo(() => {
     return Object.keys(classColors).sort();
   }, []);
+
+  // Get profession counts
+  const professionCounts = useMemo(() => {
+    const counts = {};
+    Object.values(characterData).forEach(char => {
+      if (char.professions) {
+        char.professions.forEach(prof => {
+          counts[prof.name] = (counts[prof.name] || 0) + 1;
+        });
+      }
+    });
+    return counts;
+  }, [characterData]);
+
+  const professionList = useMemo(() => {
+    return Object.keys(professionCounts).sort();
+  }, [professionCounts]);
 
   // Fetch character data from API
   const fetchCharacterData = async (character) => {
@@ -261,7 +279,18 @@ function App() {
           </div>
         </div>
         
-        <div className="filter-buttons">
+        <button 
+          onClick={() => setShowFilters(!showFilters)}
+          className="toggle-filters-btn"
+        >
+          {showFilters ? 'Hide' : 'Show'} Filters
+        </button>
+        
+        {showFilters && (
+          <>
+            <div className="filter-section">
+              <h3 className="filter-title">Class</h3>
+              <div className="filter-buttons">
           <button
             onClick={() => setSelectedClass('All')}
             className={`filter-btn ${selectedClass === 'All' ? 'active' : ''}`}
@@ -283,6 +312,23 @@ function App() {
           ))}
         </div>
       </div>
+
+      <div className="filter-section">
+        <h3 className="filter-title">Professions</h3>
+        <div className="filter-buttons profession-filters">
+          {professionList.map(profName => (
+            <button
+              key={profName}
+              className="filter-btn profession-filter"
+            >
+              {profName} [{professionCounts[profName]}]
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  )}
+</div>
 
       <div className="character-grid">
         {filteredCharacters.map((character) => {
