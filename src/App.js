@@ -42,11 +42,19 @@ const allCharacters = [
   { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3, realm: 'Ravenholdt' },
   { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10, realm: 'Ravenholdt' },
   { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7, realm: 'Ravenholdt' },
-].map(char => ({
-  ...char,
-  image: `/images/${char.name}2.jpg`,
-  faceImage: `/images/${char.name}.jpg`
-}));
+].map(char => {
+  const realmSlug = char.realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+  const nameSlug = char.name.toLowerCase();
+  
+  return {
+    ...char,
+    image: `/images/${char.name}2.jpg`,
+    faceImage: `/images/${char.name}.jpg`,
+    // Fallback to Blizzard API renders
+    apiFallbackImage: `https://render.worldofwarcraft.com/eu/character/${realmSlug}/${nameSlug}/main-raw.png`,
+    apiFallbackFace: `https://render.worldofwarcraft.com/eu/character/${realmSlug}/${nameSlug}/inset.png`
+  };
+});
 
 function RotateCcw({ size = 24 }) {
   return (
@@ -391,6 +399,10 @@ function App() {
                         src={character.image}
                         alt={character.name}
                         className="card-image"
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent infinite loop
+                          e.target.src = character.apiFallbackImage;
+                        }}
                       />
                     </div>
                     <div 
@@ -434,6 +446,10 @@ function App() {
                         src={character.faceImage}
                         alt={`${character.name} close-up`}
                         className="card-image"
+                        onError={(e) => {
+                          e.target.onerror = null; // Prevent infinite loop
+                          e.target.src = character.apiFallbackFace;
+                        }}
                       />
                       {apiData && (
                         <div className="card-overlay-info">
