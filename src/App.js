@@ -42,20 +42,15 @@ const allCharacters = [
   { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3, realm: 'Ravenholdt' },
   { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10, realm: 'Ravenholdt' },
   { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7, realm: 'Ravenholdt' },
-  { id: 25, name: 'Jisoo', class: 'Druid', favoriteRank: 17, realm: 'Ravenholdt' },
-].map(char => {
-  const realmSlug = char.realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
-  const nameSlug = char.name.toLowerCase();
-  
-  return {
-    ...char,
-    image: `/images/${char.name}2.jpg`,
-    faceImage: `/images/${char.name}.jpg`,
-    // Fallback to Blizzard API renders
-    apiFallbackImage: `https://render.worldofwarcraft.com/eu/character/${realmSlug}/${nameSlug}/main-raw.png`,
-    apiFallbackFace: `https://render.worldofwarcraft.com/eu/character/${realmSlug}/${nameSlug}/inset.png`
-  };
-});
+  { id: 25, name: 'Jisoo', class: 'Priest', favoriteRank: 25, realm: 'Ravenholdt' },
+].map(char => ({
+  ...char,
+  image: `/images/${char.name}2.jpg`,
+  faceImage: `/images/${char.name}.jpg`,
+  // Fallback to proxied Blizzard API renders
+  apiFallbackImage: `/api/render?realm=${encodeURIComponent(char.realm)}&name=${encodeURIComponent(char.name)}&type=main-raw`,
+  apiFallbackFace: `/api/render?realm=${encodeURIComponent(char.realm)}&name=${encodeURIComponent(char.name)}&type=inset`
+}));
 
 function RotateCcw({ size = 24 }) {
   return (
