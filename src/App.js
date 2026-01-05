@@ -42,6 +42,7 @@ const allCharacters = [
   { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3, realm: 'Ravenholdt' },
   { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10, realm: 'Ravenholdt' },
   { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7, realm: 'Ravenholdt' },
+  { id: 25, name: 'Jisoo', class: 'Druid', favoriteRank: 17, realm: 'Ravenholdt' },
 ].map(char => {
   const realmSlug = char.realm.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
   const nameSlug = char.name.toLowerCase();
