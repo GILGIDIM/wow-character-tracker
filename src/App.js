@@ -42,7 +42,7 @@ const allCharacters = [
   { id: 22, name: 'Tabitha', class: 'Death Knight', favoriteRank: 3, realm: 'Ravenholdt' },
   { id: 23, name: 'Tabs', class: 'Warrior', favoriteRank: 10, realm: 'Ravenholdt' },
   { id: 24, name: 'Thaler', class: 'Warlock', favoriteRank: 7, realm: 'Ravenholdt' },
-  { id: 25, name: 'Jisoo', class: 'Priest', favoriteRank: 25, realm: 'Ravenholdt' },
+  { id: 25, name: 'Jisoo', class: 'Druid', favoriteRank: 14, realm: 'Ravenholdt' },
 ].map(char => ({
   ...char,
   image: `/images/${char.name}2.jpg`,
